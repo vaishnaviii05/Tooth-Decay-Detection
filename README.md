@@ -3,8 +3,8 @@
 This project detects tooth decay from dental images using a CNN-based deep learning model.
 
 ## 📁 Dataset
--https://drive.google.com/file/d/1RDXWTtr_FMDtccFw2RBAl7hwkocPqDvL/view?usp=drive_link
--https://drive.google.com/file/d/105tdClZVw7V6e7HBoDB4U0lDZIY_I8SS/view?usp=drive_link
+- https://drive.google.com/file/d/1RDXWTtr_FMDtccFw2RBAl7hwkocPqDvL/view?usp=drive_link
+- https://drive.google.com/file/d/105tdClZVw7V6e7HBoDB4U0lDZIY_I8SS/view?usp=drive_link
 
 ## 🚀 Features
 - Image-based tooth decay detection
