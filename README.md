@@ -1,8 +1,8 @@
-#🦷 Tooth Decay Detection Using Deep Learning
+# 🦷 Tooth Decay Detection Using Deep Learning
 
 Tooth Decay Detection is an AI-based system that uses deep learning and image processing to detect dental caries from dental images. The model analyzes uploaded images using a CNN and predicts whether decay is present or not, helping in early diagnosis, faster screening, and improved dental healthcare support.
 
-##🚀 Features
+## 🚀 Features
 
 Tooth decay detection from dental images
 
@@ -16,7 +16,7 @@ Visualization and explainability modules (XAI)
 
 Clean and reproducible project structure
 
-##🧠 Technology Stack
+## 🧠 Technology Stack
 
 Python
 
@@ -30,7 +30,7 @@ Flask
 
 Scikit-learn
 
-##📁 Project Structure
+## 📁 Project Structure
 tooth-decay-detection/
  ├── app.py
  ├── train_from_archive.py
@@ -46,7 +46,7 @@ tooth-decay-detection/
  └── static/
       └── style.css
 
-##📦 Model & Dataset
+## 📦 Model & Dataset
 
 Due to GitHub file size limits, the trained model and dataset are not included in this repository.
 
@@ -85,7 +85,7 @@ http://127.0.0.1:5000/
 🧪 To Train the Model Again (Optional)
 python train_from_archive.py
 
-##📊 Evaluation
+## 📊 Evaluation
 
 - Confusion matrix evaluation supported
 
@@ -93,7 +93,7 @@ python train_from_archive.py
 
 - Explainable AI (XAI) visualizations available
 
-##📸 Demo
+## 📸 Demo
 - Uplaoded Image
   <img width="2943" height="1435" alt="372" src="https://github.com/user-attachments/assets/d8807832-7377-4b9e-a3f6-5f52f6b4a35d" />
 <img width="2943" height="1435" alt="360" src="https://github.com/user-attachments/assets/681a88f0-6309-4f9a-b0e7-411256e96b08" />
@@ -119,6 +119,6 @@ Vaishnavi Singh
 MCA | Machine Learning & Web Development
 GitHub: https://github.com/vaishnaviii05
 
-##📜 License
+## 📜 License
 
 This project is developed for educational and academic purposes.
