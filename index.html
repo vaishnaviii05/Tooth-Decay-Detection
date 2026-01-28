@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tooth Decay Detection | AI Cavity Scanner</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="background-accent"></div>
+
+  <div class="container">
+    <!-- HERO SECTION -->
+    <header class="hero">
+      <p class="hero-badge">Minor Project • Deep Learning + XAI</p>
+      <h1 class="hero-title">
+        <span class="highlight-text">Tooth Decay Detection</span>
+        <span class="hero-subline">on Panoramic Dental X-Rays</span>
+      </h1>
+      <p class="subtitle">
+        Upload a dental X-ray and let the model detect <strong>cavity regions</strong>,
+        highlight <strong>RCT (root canal treatment)</strong> areas,
+        and explain its focus using <strong>Grad-CAM heatmaps</strong>.
+      </p>
+    </header>
+
+    <!-- GLASS UPLOAD CARD -->
+    <section class="glass-card upload-card">
+      <h2>Upload X-Ray</h2>
+      <p class="upload-hint">Supported formats: PNG, JPG, JPEG, BMP</p>
+
+      <form method="POST" enctype="multipart/form-data" class="upload-form">
+        <label class="file-input-label">
+          <input type="file" name="file" accept="image/*" required>
+          <span class="file-label-text">Choose X-Ray Image</span>
+        </label>
+        <button type="submit" class="primary-btn">
+          Run Tooth Decay Detection
+        </button>
+      </form>
+    </section>
+
+    {% if show_results %}
+    <!-- DETECTION REPORT CARD WITH IMAGES -->
+    <section class="report-card-visual">
+      <div class="report-header">
+        <div>
+          <h2>Detection Overview</h2>
+          <p class="report-subtitle">
+            Model: U-Net Segmentation • Explainable with Grad-CAM
+          </p>
+        </div>
+        <div class="status-pill status-positive">
+          AI Report Generated
+        </div>
+      </div>
+
+      <div class="report-body">
+        <!-- Row 1: Uploaded vs Original -->
+        <div class="image-row">
+          <div class="card card-report">
+            <h3>Input X-Ray</h3>
+            <p class="card-caption">Raw image you uploaded to the system.</p>
+            <img src="{{ uploaded_image }}" alt="Uploaded image">
+          </div>
+
+          <div class="card card-report">
+            <h3>Model Preprocessed View</h3>
+            <p class="card-caption">
+              Contrast-enhanced grayscale used as input to the model.
+            </p>
+            <img src="{{ original_image }}" alt="Original preprocessed image">
+          </div>
+        </div>
+
+        <!-- Row 2: Mask vs Boxes -->
+        <div class="image-row">
+          <div class="card card-report">
+            <h3>Cavity / RCT Mask</h3>
+            <p class="card-caption">
+              Binary segmentation mask after gating only the teeth region.
+            </p>
+            <img src="{{ mask_image }}" alt="Predicted mask">
+          </div>
+
+          <div class="card card-report">
+            <h3>Detection Overlay</h3>
+            <p class="card-caption">
+              <strong>Cavity</strong> regions (red boxes, green fill) and
+              <strong>RCT</strong> (bright patches, yellow labels) on the X-ray.
+            </p>
+            <img src="{{ boxes_image }}" alt="Bounding boxes">
+          </div>
+        </div>
+
+        <!-- Row 3: XAI -->
+        <div class="image-row single">
+          <div class="card card-report wide">
+            <h3>XAI: Grad-CAM Heatmap</h3>
+            <p class="card-caption">
+              Heatmap restricted only to the teeth band (and cavity regions if present),
+              showing where the network focused while deciding decay.
+            </p>
+            <img src="{{ gradcam_image }}" alt="Grad-CAM heatmap">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEXTUAL DIAGNOSTIC REPORT -->
+    <section class="report-card-text">
+      <h2>🦷 Tooth Decay & RCT Report</h2>
+
+      <p><strong>Total Teeth (approx.):</strong> {{ teeth_total }}</p>
+
+      <p><strong>Teeth with Cavity:</strong>
+        {% if cavity_teeth and cavity_teeth|length > 0 %}
+          {{ cavity_teeth|join(", ") }}
+        {% else %}
+          None detected
+        {% endif %}
+      </p>
+
+      <p><strong>Teeth with RCT (Root Canal Treatment):</strong>
+        {% if rct_teeth and rct_teeth|length > 0 %}
+          {{ rct_teeth|join(", ") }}
+        {% else %}
+          None detected
+        {% endif %}
+      </p>
+
+      <p class="summary-text">
+        <strong>Summary:</strong>
+        {% if (not cavity_teeth or cavity_teeth|length == 0) and
+              (not rct_teeth or rct_teeth|length == 0) %}
+          The model did not detect any significant tooth decay or RCT-related bright patches
+          in the visible teeth region.
+        {% else %}
+          {% if cavity_teeth and cavity_teeth|length > 0 %}
+            Cavity (tooth decay) is detected on tooth positions:
+            <span class="highlight-inline">{{ cavity_teeth|join(", ") }}</span>.
+          {% endif %}
+          {% if rct_teeth and rct_teeth|length > 0 %}
+            RCT (root canal treatment) signatures are detected on:
+            <span class="highlight-inline">{{ rct_teeth|join(", ") }}</span>.
+          {% endif %}
+          <br>
+          This AI-generated report is for assistance only and should be correlated
+          with clinical findings by a dental professional.
+        {% endif %}
+      </p>
+    </section>
+    {% endif %}
+
+    <footer class="page-footer">
+      <p>
+        Project: <strong>Tooth Decay Detection using Deep Learning & XAI</strong> •
+        Flask + TensorFlow + OpenCV
+      </p>
+    </footer>
+  </div>
+
+  <!-- IMAGE ZOOM MODAL -->
+  <div id="imgModal" class="modal">
+    <span id="modalClose" class="modal-close">&times;</span>
+    <img id="modalImage" src="">
+  </div>
+
+  <!-- IMAGE ZOOM SCRIPT -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const modal = document.getElementById("imgModal");
+      const modalImg = document.getElementById("modalImage");
+      const closeBtn = document.getElementById("modalClose");
+
+      document.querySelectorAll(".card img").forEach(img => {
+        img.addEventListener("click", () => {
+          modal.style.display = "flex";
+          modalImg.src = img.src;
+        });
+      });
+
+      closeBtn.onclick = () => modal.style.display = "none";
+      modal.onclick = (e) => {
+        if (e.target === modal) modal.style.display = "none";
+      };
+    });
+  </script>
+</body>
+</html>
